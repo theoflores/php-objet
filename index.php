@@ -1,51 +1,58 @@
 <?php
 class Person {
+    private $dogs = array(); // Optionnel de faire "= array()"
     private $firstname;
     private $lastname;
-    /**
-     * Création d'un setter (ou mutateur)
-     *
-     * @param $pFirstname
-     */
-    public function setFirstname($pFirstname) {
+    public function __construct(string $pFirstname, string $pLastname) {
         $this->firstname = $pFirstname;
-    }
-    /**
-     * Création d'un getter (ou accesseur)
-     *
-     * @return mixed
-     */
-    public function getFirstname() {
-        return $this->firstname;
-    }
-    public function setLastname($pLastname) {
         $this->lastname = $pLastname;
     }
-    public function getLastname() {
+    public function getFirstname(): string {
+        return $this->firstname;
+    }
+    public function getLastname(): string {
         return $this->lastname;
     }
-    public function speak() {
-        return "Hello my name is " . $this->firstname . " " . $this->lastname ;
+    public function speak(): string {
+        $string = "Je suis $this->firstname $this->lastname et mes chiens sont : ";
+        $listDogs = array();
+        foreach ($this->dogs as $dog) {
+            $listDogs[] = $dog->getName();
+        }
+        return $string . implode(', ', $listDogs);
+    }
+    public function buy(Dog $pDog) {
+        $pDog->setOwner($this);
+        $this->dogs[] = $pDog;
     }
 }
-$person1 = new Person();
-//$person1->firstname = "John";
-//$person1->lastname = "Doe";
-
-
-$person1->setFirstname("Toto");
-$person1->setLastname("Labrico");
-var_dump($person1->speak());
-
-
-
-//var_dump($person1->getFirstname());
-//var_dump($person1->getLastname());
-
-//$person2 = new Person();
-//$person2->firstname = "Jane";
-//$person2->lastname = "Die";
-//$person2->setFirstname("Jane");
-//$person2->setLastname("Die");
+class Dog {
+    private $owner;
+    private $name;
+    public function __construct(string $pName) {
+        $this->name = $pName;
+    }
+    public function getName(): string {
+        return $this->name;
+    }
+    public function setOwner(Person $pOwner) {
+        $this->owner = $pOwner;
+    }
+    public function speak(): string {
+        return "Mon maitre est " . $this->owner->getFirstname() . " " . $this->owner->getLastname() . " et je suis $this->name";
+    }
+}
+$person = new Person("John", "Doe");
+$dog = new Dog("Johnny");
+$person->buy($dog);
+$dogBoby = new Dog("Boby");
+$person->buy($dogBoby);
+//var_dump($person);
+var_dump($person->speak());
+//var_dump($dog->speak());
+//$dogs = array();
 //
-//var_dump($person2);
+//$dogs[] = $dog;
+//$dogs[] = $dogBoby;
+//
+//var_dump($dogs);
